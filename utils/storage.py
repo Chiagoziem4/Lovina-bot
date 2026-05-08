@@ -19,7 +19,7 @@ class Storage:
     def _load_sync(filepath: str) -> Dict | List:
         """Synchronous load"""
         if not os.path.exists(filepath):
-            return {} if filepath.endswith("sudo.json") or filepath.endswith("banned.json") or filepath.endswith("roles.json") else []
+          return {} if filepath.endswith(("sudo.json", "banned.json", "roles.json", "stats.json", "groups.json")) else []
         
         with open(filepath, 'r') as f:
             return json.load(f)
