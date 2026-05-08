@@ -121,7 +121,7 @@ async def log_command(stats_file: str, user_id: int, command: str) -> None:
     if "commands" not in data:
         data["commands"] = {}
     if "users" not in data:
-        data["users"] = set()
+        data["users"] = []
     
     data["commands"][command] = data["commands"].get(command, 0) + 1
     data["users"] = list(set(data.get("users", []) + [user_id]))
