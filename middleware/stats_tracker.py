@@ -3,7 +3,7 @@ Stats Tracker Middleware
 """
 from typing import Callable, Any, Awaitable
 from aiogram import BaseMiddleware
-from aiogram.types import Update
+from aiogram.types import Message
 from config import STATS_FILE
 from utils.storage import log_command
 
@@ -12,17 +12,17 @@ class StatsTrackerMiddleware(BaseMiddleware):
     
     async def __call__(
         self,
-        handler: Callable[[Update], Awaitable[Any]],
-        event: Update,
+        handler: Callable[[Message], Awaitable[Any]],
+        event: Message,
         data: dict,
     ) -> Any:
         """Log command usage"""
         
-        if event.message and event.message.text and event.message.text.startswith('/'):
-            user_id = event.message.from_user.id
+        if event.text and event.text.startswith('/'):
+            user_id = event.from_user.id
             
             # Extract command name
-            parts = event.message.text.split()
+            parts = event.text.split()
             command = parts[0].lstrip('/')
             
             # Log to stats
