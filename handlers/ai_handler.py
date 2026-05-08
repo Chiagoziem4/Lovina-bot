@@ -29,7 +29,7 @@ async def ai_command(message: Message):
     
     # Check if in research mode
     research_data = await Storage.load(RESEARCH_STATES_FILE)
-    is_research = research_data.get(str(user_id), {}).get("active", False)
+    is_research = research_data.get("states", {}).get(str(user_id), {}).get("active", False)
     
     msg = await message.answer(Formatter.loading_message("Consulting Lovina"))
     
