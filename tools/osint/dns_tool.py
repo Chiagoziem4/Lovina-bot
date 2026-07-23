@@ -1,74 +1,21 @@
-"""
-DNS Lookup Tool
-No API key needed (dnspython direct queries)
-"""
+import asyncio
 import dns.resolver
-import dns.exception
-from typing import Dict, List, Optional
+from config import HTTP_TIMEOUT
 
-async def dns_lookup(domain: str, record_type: str = "A") -> Dict | str:
-    """
-    Lookup DNS records for domain
-    Supports: A, AAAA, MX, NS, TXT, CNAME, SOA
-    """
+
+async def dns_lookup(domain: str, record_type: str = "A") -> dict | str:
     try:
-        # Validate domain
-        if not domain or len(domain) > 253:
-            return "❌ Invalid domain"
-        
-        # Remove http/https if present
-        domain = domain.replace("http://", "").replace("https://", "").split("/")[0]
-        
-        record_type = record_type.upper()
-        
-        # Supported types
-        if record_type not in ["A", "AAAA", "MX", "NS", "TXT", "CNAME", "SOA"]:
-            record_type = "A"
-        
-        try:
+        loop = asyncio.get_event_loop()
+        def _resolve():
             resolver = dns.resolver.Resolver()
+            resolver.lifetime = HTTP_TIMEOUT
             answers = resolver.resolve(domain, record_type)
-            
-            records = []
-            for rdata in answers:
-                if record_type == "MX":
-                    records.append(f"{rdata.exchange} (priority: {rdata.preference})")
-                elif record_type in ["NS", "CNAME"]:
-                    records.append(str(rdata.target).rstrip('.'))
-                elif record_type == "SOA":
-                    records.append(f"NS: {rdata.mname}, Email: {rdata.rname}, Serial: {rdata.serial}")
-                else:
-                    records.append(str(rdata))
-            
-            return {
-                "domain": domain,
-                "type": record_type,
-                "records": records
-            }
-        
-        except dns.exception.NXDOMAIN:
-            return f"❌ Domain not found: {domain}"
-        except dns.exception.Timeout:
-            return "❌ DNS query timeout"
-    
+            return [str(r) for r in answers]
+        records = await loop.run_in_executor(None, _resolve)
+        return {"domain": domain, "type": record_type, "records": records}
+    except dns.resolver.NXDOMAIN:
+        return f"Domain {domain} does not exist"
+    except dns.resolver.NoAnswer:
+        return f"No {record_type} records found for {domain}"
     except Exception as e:
-        return f"❌ Error: {str(e)}"
-
-async def dns_lookup_all(domain: str) -> Dict | str:
-    """Lookup all common DNS record types"""
-    try:
-        results = {}
-        
-        for record_type in ["A", "AAAA", "MX", "NS", "TXT"]:
-            result = await dns_lookup(domain, record_type)
-            
-            if isinstance(result, dict):
-                results[record_type] = result.get("records", [])
-        
-        return {
-            "domain": domain,
-            "records": results
-        }
-    
-    except Exception as e:
-        return f"❌ Error: {str(e)}"
+        return f"DNS lookup failed: {e}"

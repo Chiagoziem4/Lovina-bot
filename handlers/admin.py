@@ -213,8 +213,8 @@ async def broadcast_command(message: Message):
     
     broadcast_msg = args[1]
     groups = await get_groups(GROUPS_FILE)
-    
     sent = 0
+    failed = 0
     for group_id in groups.keys():
         try:
             await message.bot.send_message(
@@ -223,7 +223,10 @@ async def broadcast_command(message: Message):
                 parse_mode="HTML"
             )
             sent += 1
-        except:
-            pass
-    
-    await message.answer(f"✅ Broadcast sent to {sent} groups", parse_mode="HTML")
+        except Exception as e:
+            failed += 1
+
+    result_msg = f"✅ Broadcast sent to {sent} groups"
+    if failed:
+        result_msg += f"\n❌ Failed: {failed} groups"
+    await message.answer(result_msg)

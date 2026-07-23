@@ -16,13 +16,14 @@ class Storage:
         return await loop.run_in_executor(None, Storage._load_sync, filepath)
     
     @staticmethod
-    def _load_sync(filepath: str) -> Dict | List:
-        """Synchronous load"""
+    def _load_sync(filepath: str):
         if not os.path.exists(filepath):
-          return {} if filepath.endswith(("sudo.json", "banned.json", "roles.json", "stats.json", "groups.json")) else []
-        
-        with open(filepath, 'r') as f:
-            return json.load(f)
+            return {}
+        try:
+            with open(filepath, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except (json.JSONDecodeError, OSError):
+            return {}
     
     @staticmethod
     async def save(filepath: str, data: Dict | List) -> None:
@@ -31,11 +32,16 @@ class Storage:
         await loop.run_in_executor(None, Storage._save_sync, filepath, data)
     
     @staticmethod
-    def _save_sync(filepath: str, data: Dict | List) -> None:
-        """Synchronous save"""
+    def _save_sync(filepath: str, data) -> None:
+        import tempfile
         os.makedirs(os.path.dirname(filepath), exist_ok=True)
-        with open(filepath, 'w') as f:
-            json.dump(data, f, indent=2)
+        dir_name = os.path.dirname(filepath)
+        with tempfile.NamedTemporaryFile(
+            mode='w', dir=dir_name, suffix='.tmp', delete=False, encoding='utf-8'
+        ) as tmp:
+            json.dump(data, tmp, indent=2)
+            tmp_path = tmp.name
+        os.replace(tmp_path, filepath)
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # SUDO USER MANAGEMENT

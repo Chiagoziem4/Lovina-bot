@@ -3,8 +3,10 @@ Lovina Bot - Main Entry Point
 """
 import asyncio
 import logging
+import time
 from aiogram import Bot, Dispatcher
 from aiogram.types import BotCommand
+from aiogram.fsm.storage.memory import MemoryStorage
 from config import BOT_TOKEN, BOT_NAME, BOT_VERSION
 
 # Import middleware
@@ -22,6 +24,9 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+BOT_START_TIME = time.time()
+
+
 async def set_default_commands(bot: Bot):
     """Set bot commands"""
     commands = [
@@ -38,27 +43,29 @@ async def set_default_commands(bot: Bot):
         BotCommand(command="research", description="Activate research mode"),
         BotCommand(command="about", description="About this bot"),
     ]
-    
     await bot.set_my_commands(commands)
     logger.info("Bot commands set")
 
+
 async def main():
     """Main bot function"""
-    
+    from config import validate_config
+    validate_config()
+
     # Validate token
     if not BOT_TOKEN or BOT_TOKEN == "YOUR_TOKEN_HERE":
         logger.error("❌ BOT_TOKEN not configured in .env")
         return
-    
+
     # Create bot and dispatcher
     bot = Bot(token=BOT_TOKEN)
-    dp = Dispatcher()
-    
+    dp = Dispatcher(storage=MemoryStorage())
+
     # Register middleware (order matters)
     dp.message.middleware(BanCheckMiddleware())
     dp.message.middleware(RateLimitMiddleware())
     dp.message.middleware(StatsTrackerMiddleware())
-    
+
     # Register routers (handlers)
     dp.include_router(start.router)
     dp.include_router(admin.router)
@@ -67,10 +74,10 @@ async def main():
     dp.include_router(analysis_handlers.router)
     dp.include_router(network_handlers.router)
     dp.include_router(research_mode.router)
-    
+
     # Set default commands
     await set_default_commands(bot)
-    
+
     # Get bot info
     bot_info = await bot.get_me()
     logger.info(f"""
@@ -83,16 +90,15 @@ async def main():
 ║ Status:      ONLINE ✅                 ║
 ╚════════════════════════════════════════╝
     """)
-    
+
     try:
         logger.info("Starting polling...")
         await dp.start_polling(bot)
-    
     except KeyboardInterrupt:
         logger.info("Bot shutdown requested")
-    
     finally:
         await bot.session.close()
+
 
 if __name__ == "__main__":
     asyncio.run(main())

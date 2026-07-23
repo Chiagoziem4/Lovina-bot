@@ -1,71 +1,36 @@
-"""
-SSL/TLS Certificate Analyzer
-No API key needed
-"""
 import ssl
 import socket
-from typing import Dict
-from datetime import datetime
+import asyncio
+from datetime import datetime, timezone
 
-async def analyze_ssl(domain: str, port: int = 443) -> Dict | str:
-    """
-    Analyze SSL/TLS certificate
-    """
+
+async def analyze_ssl(domain: str, port: int = 443) -> dict | str:
     try:
-        if not domain:
-            return "❌ Invalid domain"
-        
-        # Remove http/https
-        domain = domain.replace("http://", "").replace("https://", "").split("/")[0]
-        
-        # Create SSL context
-        context = ssl.create_default_context()
-        
-        try:
-            # Connect and get certificate
+        loop = asyncio.get_event_loop()
+        def _get_cert():
+            ctx = ssl.create_default_context()
             with socket.create_connection((domain, port), timeout=10) as sock:
-                with context.wrap_socket(sock, server_hostname=domain) as ssock:
-                    cert = ssock.getpeercert()
-                    cipher = ssock.cipher()
-                    protocol = ssock.version()
-                    
-                    # Parse certificate
-                    subject = dict(x[0] for x in cert.get('subject', []))
-                    issued_to = subject.get('commonName', 'Unknown')
-                    
-                    issuer = dict(x[0] for x in cert.get('issuer', []))
-                    issued_by = issuer.get('commonName', 'Unknown')
-                    
-                    # Dates
-                    not_before = datetime.strptime(cert.get('notBefore', ''), '%b %d %H:%M:%S %Y %Z')
-                    not_after = datetime.strptime(cert.get('notAfter', ''), '%b %d %H:%M:%S %Y %Z')
-                    
-                    days_valid = (not_after - datetime.utcnow()).days
-                    
-                    # SANs
-                    sans = []
-                    for name_type, name_value in cert.get('subjectAltName', []):
-                        if name_type == 'DNS':
-                            sans.append(name_value)
-                    
-                    return {
-                        "domain": domain,
-                        "issued_to": issued_to,
-                        "issued_by": issued_by,
-                        "valid_from": str(not_before),
-                        "valid_to": str(not_after),
-                        "days_until_expiry": days_valid,
-                        "is_expired": days_valid < 0,
-                        "is_expiring_soon": days_valid < 30,
-                        "protocol": protocol,
-                        "cipher": cipher[0],
-                        "sans": sans
-                    }
-        
-        except ssl.SSLError as e:
-            return f"❌ SSL Error: {str(e)}"
-        except socket.timeout:
-            return "❌ Connection timeout"
-    
+                with ctx.wrap_socket(sock, server_hostname=domain) as ssock:
+                    return ssock.getpeercert(), ssock.cipher(), ssock.version()
+        cert, cipher_info, protocol = await loop.run_in_executor(None, _get_cert)
+        not_after = datetime.strptime(cert["notAfter"], "%b %d %H:%M:%S %Y %Z").replace(tzinfo=timezone.utc)
+        not_before = datetime.strptime(cert["notBefore"], "%b %d %H:%M:%S %Y %Z").replace(tzinfo=timezone.utc)
+        now = datetime.now(timezone.utc)
+        days_left = (not_after - now).days
+        subject = dict(x[0] for x in cert["subject"])
+        issuer = dict(x[0] for x in cert["issuer"])
+        sans = [v for t, v in cert.get("subjectAltName", []) if t == "DNS"]
+        return {
+            "issued_to": subject.get("commonName", domain),
+            "issued_by": issuer.get("organizationName", "Unknown"),
+            "valid_from": not_before.strftime("%Y-%m-%d"),
+            "valid_to": not_after.strftime("%Y-%m-%d"),
+            "days_until_expiry": days_left,
+            "is_expired": days_left < 0,
+            "is_expiring_soon": 0 <= days_left <= 30,
+            "protocol": protocol,
+            "cipher": cipher_info[0] if cipher_info else "Unknown",
+            "sans": sans,
+        }
     except Exception as e:
-        return f"❌ Error: {str(e)}"
+        return f"SSL analysis failed: {e}"

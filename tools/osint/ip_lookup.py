@@ -1,51 +1,25 @@
-"""
-IP Lookup - Geolocation, ASN, ISP data
-No API key needed (ipapi.co free)
-"""
 import httpx
-import json
-from typing import Dict, Optional
-from config import HTTP_TIMEOUT, USER_AGENTS
-import random
+from config import HTTP_TIMEOUT
 
-async def ip_lookup(ip: str) -> Dict | str:
-    """
-    Lookup IP geolocation, ASN, ISP
-    """
+
+async def ip_lookup(ip_address: str) -> dict | str:
     try:
-        # Validate IP
-        if not ip or len(ip) > 39:
-            return "❌ Invalid IP address"
-        
-        # Use ipapi.co (no key required)
-        url = f"https://ipapi.co/{ip}/json/"
-        
-        headers = {
-            "User-Agent": random.choice([
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-                "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36",
-                "curl/7.68.0"
-            ])
+        async with httpx.AsyncClient(timeout=HTTP_TIMEOUT) as client:
+            r = await client.get(
+                f"http://ip-api.com/json/{ip_address}?fields=status,message,country,regionName,city,lat,lon,timezone,isp,org,as,query,reverse"
+            )
+            data = r.json()
+        if data.get("status") != "success":
+            return data.get("message", "Lookup failed")
+        return {
+            "ip": data["query"],
+            "location": f"{data['city']}, {data['regionName']}, {data['country']}",
+            "asn": data.get("as", "N/A"),
+            "isp": data.get("isp", "N/A"),
+            "timezone": data.get("timezone", "N/A"),
+            "latitude": data.get("lat", 0),
+            "longitude": data.get("lon", 0),
+            "hostname": data.get("reverse", ""),
         }
-        
-        async with httpx.AsyncClient() as client:
-            response = await client.get(url, headers=headers, timeout=HTTP_TIMEOUT)
-            
-            if response.status_code == 200:
-                data = response.json()
-                
-                return {
-                    "ip": data.get("ip", ip),
-                    "location": f"{data.get('city', 'Unknown')}, {data.get('region', 'Unknown')}, {data.get('country_name', 'Unknown')}",
-                    "asn": data.get("asn", "Unknown"),
-                    "isp": data.get("org", "Unknown"),
-                    "timezone": data.get("timezone", "Unknown"),
-                    "latitude": data.get("latitude", "Unknown"),
-                    "longitude": data.get("longitude", "Unknown"),
-                    "hostname": data.get("hostname", "N/A")
-                }
-            else:
-                return "❌ IP lookup failed"
-    
     except Exception as e:
-        return f"❌ Error: {str(e)}"
+        return f"IP lookup failed: {e}"

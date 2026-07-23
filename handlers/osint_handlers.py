@@ -10,6 +10,7 @@ from tools.osint.ip_lookup import ip_lookup
 from tools.osint.dns_tool import dns_lookup
 from tools.osint.subdomain import discover_subdomains
 from tools.osint.username_hunt import check_username
+from tools.osint.whois_tool import whois_lookup
 
 router = Router()
 
@@ -155,3 +156,29 @@ async def username_command(message: Message):
             await msg.edit_text(msg_text, parse_mode="HTML")
         else:
             await message.answer(msg_text, parse_mode="HTML")
+
+
+@router.message(Command("whois"))
+@require_not_banned
+async def whois_command(message: Message):
+    args = message.text.split()
+    if len(args) < 2:
+        await message.reply("Usage: /whois <domain|ip>")
+        return
+    target = args[1]
+    msg = await message.answer(Formatter.loading_message("WHOIS lookup", target))
+    result = await whois_lookup(target)
+    if isinstance(result, dict):
+        formatted = Formatter.section_header("🔍", "WHOIS", target)
+        formatted += f"\n<b>Registrar:</b> {result['registrar']}\n"
+        formatted += f"<b>Created:</b> {result['creation_date']}\n"
+        formatted += f"<b>Expires:</b> {result['expiration_date']}\n"
+        formatted += f"<b>Country:</b> {result['country']}\n"
+        if result['name_servers']:
+            formatted += "\n<b>Name Servers:</b>\n"
+            for ns in result['name_servers']:
+                formatted += f"  • <code>{ns}</code>\n"
+        formatted += f"\n{Formatter.section_divider()}\n⚠️ For educational and authorised use only"
+    else:
+        formatted = Formatter.error_message(result)
+    await msg.edit_text(formatted, parse_mode="HTML")

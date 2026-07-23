@@ -123,17 +123,27 @@ async def dork_command(message: Message):
 @router.message(Command("report"))
 @require_not_banned
 async def report_command(message: Message):
-    """
-    /report - Synthesize findings into pentest report
-    """
-    # In real implementation, would fetch latest findings from session
-    await message.reply(
-        "📋 <b>Generate Pentest Report</b>\n\n"
-        "Provide findings to synthesize:\n"
-        "<code>/ai here's a summary of vulnerabilities found...</code>\n\n"
-        "Then use: <code>/report</code>",
-        parse_mode="HTML"
-    )
+    args = message.text.split(maxsplit=1)
+    if len(args) < 2:
+        await message.reply(
+            "📋 <b>Generate Pentest Report</b>\n\n"
+            "Usage: /report <summary of findings>\n\n"
+            "Example:\n"
+            "<code>/report Found open ports 22, 3306 and weak SSL on target.com. "
+            "Admin panel exposed at /admin with default credentials.</code>",
+            parse_mode="HTML"
+        )
+        return
+    findings = args[1]
+    user_id = message.from_user.id
+    msg = await message.answer(Formatter.loading_message("Generating pentest report"))
+    response = await ai_pentest_report(user_id, findings)
+    messages = Formatter.truncate(response)
+    for idx, msg_text in enumerate(messages):
+        if idx == 0:
+            await msg.edit_text(msg_text, parse_mode="HTML")
+        else:
+            await message.answer(msg_text, parse_mode="HTML")
 
 @router.message(Command("clear"))
 @require_not_banned

@@ -11,20 +11,21 @@ load_dotenv()
 # TELEGRAM BOT SETTINGS
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-BOT_TOKEN = os.getenv("BOT_TOKEN", "8627899799:AAHHlY_WpJpzlm8mgfc6gu6mENVX0Uu6Sg4")
+BOT_TOKEN = os.getenv("BOT_TOKEN")
 BOT_USERNAME = "VilegurlBot"
 BOT_NAME = "Lovina"
 CREATOR = "Lord Noctis"
 
 # User IDs
-LORD_NOCTIS_ID = int(os.getenv("LORD_NOCTIS_ID", "8473529578"))
+LORD_NOCTIS_ID_STR = os.getenv("LORD_NOCTIS_ID")
+LORD_NOCTIS_ID = int(LORD_NOCTIS_ID_STR) if LORD_NOCTIS_ID_STR else None
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # AI SETTINGS
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-GROQ_API_KEY = os.getenv("GROQ_API_KEY", "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")
-GROQ_MODEL = "llama-3.1-8b-instant"
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+GROQ_MODEL = "llama-3.3-70b-versatile"
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # RATE LIMITING (per action, outside sudo)
@@ -56,6 +57,7 @@ ROLES_FILE = os.path.join(DATA_DIR, "roles.json")
 STATS_FILE = os.path.join(DATA_DIR, "stats.json")
 RESEARCH_STATES_FILE = os.path.join(DATA_DIR, "research_states.json")
 GROUPS_FILE = os.path.join(DATA_DIR, "groups.json")
+CONVERSATIONS_FILE = os.path.join(DATA_DIR, "conversations.json")
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # WEB SCRAPING
@@ -86,10 +88,20 @@ HIBP_API_KEY = os.getenv("HIBP_API_KEY", "")
 # RESEARCH MODE PASSPHRASE
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-RESEARCH_PASSPHRASE = "knowledge"
+RESEARCH_PASSPHRASE = os.getenv("RESEARCH_PASSPHRASE")
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # BOT VERSION
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 BOT_VERSION = "1.0.0"
+
+
+def validate_config():
+    missing = []
+    if not BOT_TOKEN: missing.append("BOT_TOKEN")
+    if not GROQ_API_KEY: missing.append("GROQ_API_KEY")
+    if not LORD_NOCTIS_ID: missing.append("LORD_NOCTIS_ID")
+    if not RESEARCH_PASSPHRASE: missing.append("RESEARCH_PASSPHRASE")
+    if missing:
+        raise EnvironmentError(f"Missing required environment variables: {', '.join(missing)}")

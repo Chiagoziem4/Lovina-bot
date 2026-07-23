@@ -149,7 +149,6 @@ python main.py
 
 ## 🔐 Research Mode
 
-**Passphrase:** `knowledge`
 
 Activates advanced features:
 - No rate limiting for operators
