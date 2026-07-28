@@ -37,90 +37,91 @@ async def start_command(message: Message):
     
     await message.answer(welcome, parse_mode="HTML", reply_markup=keyboard)
 
-@router.message(Command("help"))
-async def help_command(message: Message):
-    """
-    /help [category] - Show available commands
-    """
-    args = message.text.split()
-    category = args[1].lower() if len(args) > 1 else None
-    
-    help_text = ""
-    
-    if category in [None, "osint"]:
-        help_text += (
-            "<b>🔍 OSINT Tools:</b>\n"
-            "/ip <address> - IP geolocation lookup\n"
-            "/dns <domain> [type] - DNS record lookup\n"
-            "/whois <domain|ip> - WHOIS information\n"
-            "/ssl <domain> - SSL/TLS certificate analysis\n"
-            "/subdomains <domain> - Passive subdomain discovery\n"
-            "/username <username> - Search across 27+ platforms\n\n"
-        )
-    
-    if category in [None, "network"]:
-        help_text += (
-            "<b>🌐 Network Tools:</b>\n"
-            "/scan <host> [ports] - TCP port scanner\n"
-            "/tech <url> - Web technology fingerprinting\n"
-            "/headers <url> - HTTP security header audit\n\n"
-        )
-    
-    if category in [None, "analysis"]:
-        help_text += (
-            "<b>🔬 Analysis Tools:</b>\n"
-            "/hash <text> - Generate all hash types\n"
-            "/hashid <hash> - Identify hash type\n"
-            "/encode <format> <text> - Encode text\n"
-            "/decode <format> <text> - Decode text\n"
-            "/jwt <token> - JWT token analyzer\n"
-            "/cve <CVE-ID> - CVE vulnerability lookup\n\n"
-        )
-    
-    if category in [None, "crypto"]:
-        help_text += (
-            "<b>🔐 Crypto Tools:</b>\n"
-            "/encrypt <algo> <text> [key] - Encrypt text\n"
-            "/decrypt <algo> <text> [key] - Decrypt text\n"
-            "/convert <format> <value> - Convert number bases\n\n"
-        )
-    
-    if category in [None, "ai"]:
-        help_text += (
-            "<b>🧠 AI Tools:</b>\n"
-            "/ai <question> - Chat with Lovina AI\n"
-            "/explain <text> - Explain security output\n"
-            "/threat <description> - Generate threat model\n"
-            "/report - Synthesize findings into report\n"
-            "/dork <topic> - Generate Google dork queries\n"
-            "/clear - Clear conversation memory\n\n"
-        )
-    
-    user_perm = await get_user_permission(message.from_user.id)
-    
-    if user_perm.value >= Permission.SUDO.value:
-        help_text += (
-            "<b>👑 Admin Commands:</b>\n"
-            "/addsudo <user_id> - Add sudo user\n"
-            "/removesudo <user_id> - Remove sudo user\n"
-            "/sudolist - List sudo users\n"
-            "/ban <user_id> - Ban user\n"
-            "/unban <user_id> - Unban user\n"
-            "/role <user_id> <role> - Assign researcher role\n"
-            "/stats - View bot statistics\n"
-            "/groups - Manage group monitoring\n\n"
-        )
-    
-    if category in [None, "research"]:
-        help_text += (
-            "<b>🔐 Research Mode:</b>\n"
-            "/research - Activate research mode\n"
-            "/endresearch - Deactivate research mode\n\n"
-        )
-    
-    help_text += f"<i>v{BOT_VERSION}</i>"
-    
-    await message.answer(help_text, parse_mode="HTML")
+# ── OLD /help HANDLER MOVED TO handlers/help_handler.py ──────────────────
+# @router.message(Command("help"))
+# async def help_command(message: Message):
+#     """
+#     /help [category] - Show available commands
+#     """
+#     args = message.text.split()
+#     category = args[1].lower() if len(args) > 1 else None
+#     
+#     help_text = ""
+#     
+#     if category in [None, "osint"]:
+#         help_text += (
+#             "<b>🔍 OSINT Tools:</b>\n"
+#             "/ip <address> - IP geolocation lookup\n"
+#             "/dns <domain> [type] - DNS record lookup\n"
+#             "/whois <domain|ip> - WHOIS information\n"
+#             "/ssl <domain> - SSL/TLS certificate analysis\n"
+#             "/subdomains <domain> - Passive subdomain discovery\n"
+#             "/username <username> - Search across 27+ platforms\n\n"
+#         )
+#     
+#     if category in [None, "network"]:
+#         help_text += (
+#             "<b>🌐 Network Tools:</b>\n"
+#             "/scan <host> [ports] - TCP port scanner\n"
+#             "/tech <url> - Web technology fingerprinting\n"
+#             "/headers <url> - HTTP security header audit\n\n"
+#         )
+#     
+#     if category in [None, "analysis"]:
+#         help_text += (
+#             "<b>🔬 Analysis Tools:</b>\n"
+#             "/hash <text> - Generate all hash types\n"
+#             "/hashid <hash> - Identify hash type\n"
+#             "/encode <format> <text> - Encode text\n"
+#             "/decode <format> <text> - Decode text\n"
+#             "/jwt <token> - JWT token analyzer\n"
+#             "/cve <CVE-ID> - CVE vulnerability lookup\n\n"
+#         )
+#     
+#     if category in [None, "crypto"]:
+#         help_text += (
+#             "<b>🔐 Crypto Tools:</b>\n"
+#             "/encrypt <algo> <text> [key] - Encrypt text\n"
+#             "/decrypt <algo> <text> [key] - Decrypt text\n"
+#             "/convert <format> <value> - Convert number bases\n\n"
+#         )
+#     
+#     if category in [None, "ai"]:
+#         help_text += (
+#             "<b>🧠 AI Tools:</b>\n"
+#             "/ai <question> - Chat with Lovina AI\n"
+#             "/explain <text> - Explain security output\n"
+#             "/threat <description> - Generate threat model\n"
+#             "/report - Synthesize findings into report\n"
+#             "/dork <topic> - Generate Google dork queries\n"
+#             "/clear - Clear conversation memory\n\n"
+#         )
+#     
+#     user_perm = await get_user_permission(message.from_user.id)
+#     
+#     if user_perm.value >= Permission.SUDO.value:
+#         help_text += (
+#             "<b>👑 Admin Commands:</b>\n"
+#             "/addsudo <user_id> - Add sudo user\n"
+#             "/removesudo <user_id> - Remove sudo user\n"
+#             "/sudolist - List sudo users\n"
+#             "/ban <user_id> - Ban user\n"
+#             "/unban <user_id> - Unban user\n"
+#             "/role <user_id> <role> - Assign researcher role\n"
+#             "/stats - View bot statistics\n"
+#             "/groups - Manage group monitoring\n\n"
+#         )
+#     
+#     if category in [None, "research"]:
+#         help_text += (
+#             "<b>🔐 Research Mode:</b>\n"
+#             "/research - Activate research mode\n"
+#             "/endresearch - Deactivate research mode\n\n"
+#         )
+#     
+#     help_text += f"<i>v{BOT_VERSION}</i>"
+#     
+#     await message.answer(help_text, parse_mode="HTML")
 
 @router.message(Command("about"))
 async def about_command(message: Message):

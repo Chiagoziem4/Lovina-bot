@@ -11,3 +11,6 @@ data/
 .DS_Store
 .idea/
 *.swp
+data/spider/*.db
+data/spider/users/
+data/spider/exports/
