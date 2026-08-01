@@ -11,7 +11,7 @@ from tools.network.ssl_analyzer import analyze_ssl
 
 router = Router()
 
-@router.message(Command("scan"))
+@router.message(Command("portscan"))
 @require_not_banned
 async def scan_command(message: Message):
     """
@@ -20,7 +20,7 @@ async def scan_command(message: Message):
     args = message.text.split()
     
     if len(args) < 2:
-        await message.reply("Usage: /scan <host> [ports]\nExample: /scan example.com 80,443,8080")
+        await message.reply("Usage: /portscan <host> [ports]\nExample: /portscan example.com 80,443,8080")
         return
     
     host = args[1]

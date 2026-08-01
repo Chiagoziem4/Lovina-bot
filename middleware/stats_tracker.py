@@ -23,7 +23,7 @@ class StatsTrackerMiddleware(BaseMiddleware):
             
             # Extract command name
             parts = event.text.split()
-            command = parts[0].lstrip('/')
+            command = parts[0].lstrip('/').split('@')[0]
             
             # Log to stats
             await log_command(STATS_FILE, user_id, command)

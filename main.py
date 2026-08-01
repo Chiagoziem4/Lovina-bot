@@ -76,6 +76,7 @@ async def set_default_commands(bot: Bot):
         BotCommand(command="spiderjobs", description="View crawl job history"),
         BotCommand(command="spiderexport", description="Download crawl results"),
         BotCommand(command="research", description="Activate research mode"),
+        BotCommand(command="addgroup", description="Register group for broadcasts (use in group)"),
         BotCommand(command="status", description="Bot status and uptime"),
         BotCommand(command="clear", description="Clear AI conversation history"),
     ]

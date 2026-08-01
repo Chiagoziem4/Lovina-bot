@@ -79,7 +79,7 @@ async def dns_command(message: Message):
     
     await msg.edit_text(formatted, parse_mode="HTML")
 
-@router.message(Command("subdomains"))
+@router.message(Command("subdomain"))
 @require_not_banned
 async def subdomains_command(message: Message):
     """
@@ -88,7 +88,7 @@ async def subdomains_command(message: Message):
     args = message.text.split()
     
     if len(args) < 2:
-        await message.reply("Usage: /subdomains <domain>")
+        await message.reply("Usage: /subdomain <domain>")
         return
     
     domain = args[1]

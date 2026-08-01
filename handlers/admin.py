@@ -230,3 +230,31 @@ async def broadcast_command(message: Message):
     if failed:
         result_msg += f"\n❌ Failed: {failed} groups"
     await message.answer(result_msg)
+
+@router.message(Command("addgroup"))
+@require_sudo
+async def addgroup_command(message: Message):
+    """
+    /addgroup - Register current group for broadcasts (use inside a group)
+    """
+    if message.chat.type not in ("group", "supergroup"):
+        await message.reply(
+            "❌ <b>Wrong chat type</b>\n\n"
+            "Use /addgroup inside the group you want to register.\n"
+            "This command does not work in private chats.",
+            parse_mode="HTML"
+        )
+        return
+
+    group_id = message.chat.id
+    group_name = message.chat.title or "Unknown Group"
+
+    await add_group(GROUPS_FILE, group_id, group_name)
+
+    await message.reply(
+        f"✅ <b>Group Registered</b>\n\n"
+        f"<b>Name:</b> {group_name}\n"
+        f"<b>ID:</b> <code>{group_id}</code>\n\n"
+        f"This group will now receive broadcast messages from /broadcast.",
+        parse_mode="HTML"
+    )

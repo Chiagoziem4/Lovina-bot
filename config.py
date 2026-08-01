@@ -33,10 +33,10 @@ GROQ_MODEL = "llama-3.3-70b-versatile"
 
 RATE_LIMITS = {
     "default": (10, 60),          # 10 requests per 60 seconds
-    "scan": (3, 120),             # 3 requests per 120 seconds
+    "portscan": (3, 120),         # 3 requests per 120 seconds
     "ai": (20, 3600),             # 20 requests per 3600 seconds
     "username": (5, 60),          # 5 requests per 60 seconds
-    "subdomains": (3, 120),       # 3 requests per 120 seconds
+    "subdomain": (3, 120),        # 3 requests per 120 seconds
 }
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

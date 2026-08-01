@@ -2,7 +2,7 @@
 Start, Help, About commands
 """
 from aiogram import Router, F
-from aiogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup
+from aiogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
 from aiogram.filters import Command
 from config import BOT_NAME, CREATOR, BOT_VERSION
 from utils.permissions import get_user_permission, Permission
@@ -140,17 +140,20 @@ async def about_command(message: Message):
         f"• Python 3.11+\n"
         f"• Aiogram 3 (Async Telegram Framework)\n"
         f"• Groq API (LLM Integration)\n"
-        f"• 27+ No-API Security Tools\n\n"
+        f"• 140+ Security and Analysis Tools\n\n"
         f"<b>⚠️ Disclaimer:</b>\n"
         f"<i>For authorized security research and educational purposes only. "
         f"All tools should be used ethically and legally. Unauthorized access "
         f"to computer systems is illegal.</i>\n\n"
         f"<b>🔐 Features:</b>\n"
         f"✓ 4-tier permission system\n"
-        f"✓ Research mode activation\n"
-        f"✓ Rate limiting\n"
-        f"✓ Group monitoring\n"
-        f"✓ AI-powered analysis\n"
+        f"✓ AI chat with persistent memory\n"
+        f"✓ Stealth web scraper (Chrome TLS impersonation)\n"
+        f"✓ AI-powered structured data extraction\n"
+        f"✓ 140+ cybersecurity tools\n"
+        f"✓ Research mode with passphrase gate\n"
+        f"✓ Personal encrypted notes and timeline\n"
+        f"✓ Rate limiting and ban system\n"
     )
     
     await message.answer(about_text, parse_mode="HTML")
@@ -158,16 +161,85 @@ async def about_command(message: Message):
 @router.message(Command("status"))
 async def status_command(message: Message):
     """
-    /status - Bot status and statistics
+    /status - Bot status and real-time statistics
     """
-    # This would require tracking uptime and stats
+    import time
+    from main import BOT_START_TIME
+    from utils.storage import get_stats
+    from config import STATS_FILE
+
+    uptime_seconds = int(time.time() - BOT_START_TIME)
+    hours, remainder = divmod(uptime_seconds, 3600)
+    minutes, seconds = divmod(remainder, 60)
+    uptime_str = f"{hours}h {minutes}m {seconds}s"
+
+    stats = await get_stats(STATS_FILE)
+    unique_users = len(stats.get("users", []))
+    total_commands = sum(stats.get("commands", {}).values())
+    top_commands = sorted(
+        stats.get("commands", {}).items(),
+        key=lambda x: x[1],
+        reverse=True
+    )[:5]
+
     status_text = (
         "<b>📊 Bot Status</b>\n\n"
         "🟢 <b>Online</b>\n"
-        "⏱️ Uptime: Calculating...\n"
-        "👥 Active Users: Tracking...\n"
-        "📈 Total Commands: Monitoring...\n\n"
-        "<i>Statistics tracking enabled</i>"
+        f"⏱️ Uptime: <b>{uptime_str}</b>\n"
+        f"👥 Unique Users: <b>{unique_users}</b>\n"
+        f"📈 Total Commands: <b>{total_commands}</b>\n"
     )
-    
+
+    if top_commands:
+        status_text += "\n<b>🏆 Top Commands:</b>\n"
+        for cmd, count in top_commands:
+            status_text += f"  /{cmd}: {count}\n"
+
+    status_text += f"\n<b>Version:</b> {BOT_VERSION}"
+
     await message.answer(status_text, parse_mode="HTML")
+
+
+@router.callback_query(F.data == "help_menu")
+async def help_menu_callback(callback: CallbackQuery):
+    """Handle the Commands button on /start"""
+    await callback.answer()
+    await callback.message.answer(
+        "<b>📚 How to get help</b>\n\n"
+        "• /help — Browse commands by category\n"
+        "• /help all — Show every command at once\n"
+        "• /help ai — AI assistant commands\n"
+        "• /help network — Network and recon tools\n"
+        "• /help osint — OSINT tools\n"
+        "• /help scraper — Web scraper commands\n"
+        "• /help ctf — CTF and learning tools\n"
+        "• /help utility — Personal toolkit\n"
+        "• /commands — Compact quick-reference list",
+        parse_mode="HTML"
+    )
+
+
+@router.callback_query(F.data == "about_bot")
+async def about_bot_callback(callback: CallbackQuery):
+    """Handle the About button on /start"""
+    await callback.answer()
+    await callback.message.answer(
+        "<b>ℹ️ About Lovina Bot</b>\n\n"
+        "<b>Creator:</b> Lord Noctis\n"
+        "<b>Version:</b> 2.0.0\n"
+        "<b>Telegram:</b> @VilegurlBot\n\n"
+        "<b>What Lovina Does:</b>\n"
+        "• AI-powered cybersecurity assistant\n"
+        "• 140+ security and analysis tools\n"
+        "• Stealth web scraper with AI extraction\n"
+        "• Personal investigation toolkit\n"
+        "• CTF payload libraries and references\n\n"
+        "<b>Tech Stack:</b>\n"
+        "• Python 3.11 + aiogram 3\n"
+        "• Groq LLaMA 3.3-70B\n"
+        "• curl-cffi (Chrome TLS impersonation)\n"
+        "• 4-tier permission system\n\n"
+        "<b>⚠️ Disclaimer:</b>\n"
+        "<i>For authorised security research and educational use only.</i>",
+        parse_mode="HTML"
+    )

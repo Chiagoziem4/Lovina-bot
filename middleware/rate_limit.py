@@ -24,7 +24,7 @@ class RateLimitMiddleware(BaseMiddleware):
             
             # Extract command name
             parts = event.text.split()
-            command = parts[0].lstrip('/')  # Remove leading /
+            command = parts[0].lstrip('/').split('@')[0]  # Remove leading / and strip @botusername
             
             # Check rate limit
             is_limited, wait_seconds = await check_rate_limit(user_id, command)

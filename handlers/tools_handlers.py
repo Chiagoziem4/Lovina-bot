@@ -59,7 +59,10 @@ async def banner_cmd(message: Message):
 async def rdns_cmd(message: Message):
     ip=_arg(message.text)
     if not ip: await message.answer("Usage: /rdns <IP>"); return
-    from tools.network.recon import reverse_dns; await _send(message,await reverse_dns(ip),f"🔄 Reverse DNS — {ip}")
+    m=await message.answer(f"🔄 Reverse DNS lookup for <code>{ip}</code>...",parse_mode="HTML")
+    from tools.network.recon import reverse_dns
+    result=await reverse_dns(ip)
+    await m.delete(); await _send(message,result,f"🔄 Reverse DNS — {ip}")
 
 @router.message(Command("asn"))
 @require_not_banned
@@ -263,14 +266,20 @@ async def cors_cmd(message: Message):
 async def robots_cmd(message: Message):
     url=_arg(message.text)
     if not url: await message.answer("Usage: /robots <url>"); return
-    from tools.web.analysis import fetch_robots; await _send(message,await fetch_robots(url),f"🤖 Robots.txt")
+    m=await message.answer(f"🤖 Fetching robots.txt from <code>{url}</code>...",parse_mode="HTML")
+    from tools.web.analysis import fetch_robots
+    result=await fetch_robots(url)
+    await m.delete(); await _send(message,result,"🤖 Robots.txt")
 
 @router.message(Command("sitemap"))
 @require_not_banned
 async def sitemap_cmd(message: Message):
     url=_arg(message.text)
     if not url: await message.answer("Usage: /sitemap <url>"); return
-    from tools.web.analysis import parse_sitemap; await _send(message,await parse_sitemap(url),f"🗺️ Sitemap")
+    m=await message.answer(f"🗺️ Fetching sitemap from <code>{url}</code>...",parse_mode="HTML")
+    from tools.web.analysis import parse_sitemap
+    result=await parse_sitemap(url)
+    await m.delete(); await _send(message,result,"🗺️ Sitemap")
 
 @router.message(Command("techstack"))
 @require_not_banned
@@ -286,35 +295,50 @@ async def techstack_cmd(message: Message):
 async def pagemeta_cmd(message: Message):
     url=_arg(message.text)
     if not url: await message.answer("Usage: /pagemeta <url>"); return
-    from tools.web.analysis import extract_page_meta; await _send(message,await extract_page_meta(url),f"📄 Page Meta")
+    m=await message.answer(f"📄 Extracting meta from <code>{url}</code>...",parse_mode="HTML")
+    from tools.web.analysis import extract_page_meta
+    result=await extract_page_meta(url)
+    await m.delete(); await _send(message,result,"📄 Page Meta")
 
 @router.message(Command("links"))
 @require_not_banned
 async def links_cmd(message: Message):
     url=_arg(message.text)
     if not url: await message.answer("Usage: /links <url>"); return
-    from tools.web.analysis import extract_links_from_page; await _send(message,await extract_links_from_page(url),"🔗 Links")
+    m=await message.answer(f"🔗 Extracting links from <code>{url}</code>...",parse_mode="HTML")
+    from tools.web.analysis import extract_links_from_page
+    result=await extract_links_from_page(url)
+    await m.delete(); await _send(message,result,"🔗 Links")
 
 @router.message(Command("harvestemail"))
 @require_not_banned
 async def harvestemail_cmd(message: Message):
     url=_arg(message.text)
     if not url: await message.answer("Usage: /harvestemail <url>"); return
-    from tools.web.analysis import harvest_emails; await _send(message,await harvest_emails(url),"📧 Email Harvest")
+    m=await message.answer(f"📧 Harvesting emails from <code>{url}</code>...",parse_mode="HTML")
+    from tools.web.analysis import harvest_emails
+    result=await harvest_emails(url)
+    await m.delete(); await _send(message,result,"📧 Email Harvest")
 
 @router.message(Command("cookies"))
 @require_not_banned
 async def cookies_cmd(message: Message):
     url=_arg(message.text)
     if not url: await message.answer("Usage: /cookies <url>"); return
-    from tools.web.analysis import analyse_cookies; await _send(message,await analyse_cookies(url),"🍪 Cookie Analysis")
+    m=await message.answer(f"🍪 Analysing cookies on <code>{url}</code>...",parse_mode="HTML")
+    from tools.web.analysis import analyse_cookies
+    result=await analyse_cookies(url)
+    await m.delete(); await _send(message,result,"🍪 Cookie Analysis")
 
 @router.message(Command("redirectchain"))
 @require_not_banned
 async def redirectchain_cmd(message: Message):
     url=_arg(message.text)
     if not url: await message.answer("Usage: /redirectchain <url>"); return
-    from tools.web.analysis import check_redirect_chain; await _send(message,await check_redirect_chain(url),"↪️ Redirect Chain")
+    m=await message.answer(f"↪️ Following redirects from <code>{url}</code>...",parse_mode="HTML")
+    from tools.web.analysis import check_redirect_chain
+    result=await check_redirect_chain(url)
+    await m.delete(); await _send(message,result,"↪️ Redirect Chain")
 
 @router.message(Command("wayback"))
 @require_not_banned
@@ -330,28 +354,40 @@ async def wayback_cmd(message: Message):
 async def forms_cmd(message: Message):
     url=_arg(message.text)
     if not url: await message.answer("Usage: /forms <url>"); return
-    from tools.web.analysis import find_forms; await _send(message,await find_forms(url),"📝 Forms")
+    m=await message.answer(f"📝 Finding forms on <code>{url}</code>...",parse_mode="HTML")
+    from tools.web.analysis import find_forms
+    result=await find_forms(url)
+    await m.delete(); await _send(message,result,"📝 Forms")
 
 @router.message(Command("comments"))
 @require_not_banned
 async def comments_cmd(message: Message):
     url=_arg(message.text)
     if not url: await message.answer("Usage: /comments <url>"); return
-    from tools.web.analysis import extract_comments; await _send(message,await extract_comments(url),"💬 HTML Comments")
+    m=await message.answer(f"💬 Extracting comments from <code>{url}</code>...",parse_mode="HTML")
+    from tools.web.analysis import extract_comments
+    result=await extract_comments(url)
+    await m.delete(); await _send(message,result,"💬 HTML Comments")
 
 @router.message(Command("jsfiles"))
 @require_not_banned
 async def jsfiles_cmd(message: Message):
     url=_arg(message.text)
     if not url: await message.answer("Usage: /jsfiles <url>"); return
-    from tools.web.analysis import list_js_files; await _send(message,await list_js_files(url),"📜 JS Files")
+    m=await message.answer(f"📜 Finding JS files on <code>{url}</code>...",parse_mode="HTML")
+    from tools.web.analysis import list_js_files
+    result=await list_js_files(url)
+    await m.delete(); await _send(message,result,"📜 JS Files")
 
 @router.message(Command("cdn"))
 @require_not_banned
 async def cdn_cmd(message: Message):
     url=_arg(message.text)
     if not url: await message.answer("Usage: /cdn <url>"); return
-    from tools.web.analysis import detect_cdn; await _send(message,await detect_cdn(url),"☁️ CDN Detection")
+    m=await message.answer(f"☁️ Detecting CDN for <code>{url}</code>...",parse_mode="HTML")
+    from tools.web.analysis import detect_cdn
+    result=await detect_cdn(url)
+    await m.delete(); await _send(message,result,"☁️ CDN Detection")
 
 @router.message(Command("waf"))
 @require_not_banned
@@ -459,8 +495,9 @@ async def extractip_cmd(message: Message):
 @require_not_banned
 async def mac_cmd(message: Message):
     mac=_arg(message.text)
-    if not mac: await message.answer("Usage: /mac <MAC address>"); return
-    from tools.text.analysis import mac_lookup; await _send(message,mac_lookup(mac),f"🔌 MAC — {mac}")
+    if not mac: await message.answer("Usage: /mac <MAC address>\nExample: /mac 00:1A:2B:3C:4D:5E"); return
+    from tools.text.analysis import mac_lookup
+    await _send(message,mac_lookup(mac),f"🔌 MAC — {mac}")
 
 # ── FILE ANALYSIS ─────────────────────────────────────────────────────────────
 @router.message(Command("filetype"))
@@ -539,7 +576,10 @@ async def gitosint_cmd(message: Message):
 async def emailcheck_cmd(message: Message):
     email=_arg(message.text)
     if not email: await message.answer("Usage: /emailcheck <email>"); return
-    from tools.osint.recon import email_check; await _send(message,await email_check(email),f"📧 Email Check")
+    m=await message.answer(f"📧 Checking <code>{email}</code>...",parse_mode="HTML")
+    from tools.osint.recon import email_check
+    result=await email_check(email)
+    await m.delete(); await _send(message,result,"📧 Email Check")
 
 @router.message(Command("archive"))
 @require_not_banned
