@@ -1,10 +1,8 @@
-# 🌙 Lovina Bot — AI-Powered Cybersecurity Assistant
+# Lovina Bot — AI-Powered Cybersecurity Assistant
 
 <div align="center">
 
 **Lovina** is a production-ready Telegram bot that combines a strategic AI assistant, 140+ cybersecurity tools, a stealth web scraper, and a personal investigation toolkit — all accessible from Telegram with no browser required.
-
-Built by **Lord Noctis** · Powered by **Groq LLaMA 3.3-70B** · Deployed on **Railway**
 
 ---
 
@@ -888,16 +886,6 @@ Lovina Bot is an academic cybersecurity research assistant built for **authorise
 - The web scraper must only be used on websites you are authorised to scrape
 
 **Use ethically. Stay legal. Hack responsibly.**
-
----
-
-## 👨‍💻 Creator
-
-**Lord Noctis** — Cybersecurity Research & Development
-
-- GitHub: [github.com/Chiagoziem4](https://github.com/Chiagoziem4)
-- Telegram: [@Gozar_4](https://t.me/Gozar_4)
-- X: [@Gozar_4](https://x.com/Gozar_4)
 
 ---
 
