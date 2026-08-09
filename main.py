@@ -19,6 +19,7 @@ from handlers import start, admin, ai_handler, osint_handlers, analysis_handlers
 from handlers.scraper_handlers import router as scraper_router
 from handlers.tools_handlers import router as tools_router
 from handlers.help_handler import router as help_router
+from handlers.setprovider_handler import router as setprovider_router
 
 # Configure logging
 logging.basicConfig(
@@ -78,6 +79,8 @@ async def set_default_commands(bot: Bot):
         BotCommand(command="research", description="Activate research mode"),
         BotCommand(command="addgroup", description="Register group for broadcasts (use in group)"),
         BotCommand(command="status", description="Bot status and uptime"),
+        BotCommand(command="provider", description="Show current AI provider and status"),
+        BotCommand(command="setprovider", description="Switch AI provider (Lord Noctis only)"),
         BotCommand(command="clear", description="Clear AI conversation history"),
     ]
     await bot.set_my_commands(commands, scope=BotCommandScopeDefault())
@@ -106,6 +109,7 @@ async def main():
     # Register routers (handlers)
     dp.include_router(start.router)
     dp.include_router(admin.router)
+    dp.include_router(setprovider_router)
     dp.include_router(ai_handler.router)
     dp.include_router(osint_handlers.router)
     dp.include_router(analysis_handlers.router)

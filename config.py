@@ -27,6 +27,30 @@ LORD_NOCTIS_ID = int(LORD_NOCTIS_ID_STR) if LORD_NOCTIS_ID_STR else None
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 GROQ_MODEL = "llama-3.3-70b-versatile"
 
+# ── AI Provider Selection ─────────────────────────────────────────────────────
+# Set to one of: groq, openai, anthropic, gemini, mistral, ollama
+AI_PROVIDER = os.getenv("AI_PROVIDER", "groq")
+
+# OpenAI
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
+OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
+
+# Anthropic Claude
+ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "")
+ANTHROPIC_MODEL = os.getenv("ANTHROPIC_MODEL", "claude-3-haiku-20240307")
+
+# Google Gemini
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
+GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-1.5-flash")
+
+# Mistral
+MISTRAL_API_KEY = os.getenv("MISTRAL_API_KEY", "")
+MISTRAL_MODEL = os.getenv("MISTRAL_MODEL", "mistral-medium")
+
+# Ollama (local — no API key needed)
+OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
+OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "llama3")
+
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # RATE LIMITING (per action, outside sudo)
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

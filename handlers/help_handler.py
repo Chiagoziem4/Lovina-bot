@@ -218,6 +218,8 @@ HELP_SECTIONS = {
             ("/stats", "Bot usage statistics"),
             ("/status", "Bot uptime and activity summary"),
             ("/addgroup", "Register group for broadcasts"),
+            ("/provider", "Show current AI provider and what is configured"),
+            ("/setprovider <name>", "Switch AI provider instantly (Lord Noctis only)"),
         ],
     },
     "research": {
