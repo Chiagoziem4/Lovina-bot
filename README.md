@@ -285,6 +285,219 @@ response back to Telegram
 
 ---
 
+## 📋 Complete Command Reference
+
+Lovina Bot provides **142 commands** across 13 categories. Use `/help` for interactive help, `/help <category>` for a category overview, or `/help all` for the full reference.
+
+### 🤖 AI ASSISTANT
+
+| Command | Description |
+|---------|-------------|
+| `/ai <message>` | Chat with Lovina AI |
+| `/clear` | Clear your conversation history |
+| `/explain <text>` | AI explains any text or tool output |
+| `/threat <description>` | AI threat model for a target |
+| `/report <findings>` | Generate a pentest report |
+| `/dork <target>` | AI-generated Google dork queries |
+
+### 🕷️ WEB SCRAPER
+
+| Command | Description |
+|---------|-------------|
+| `/scrape <url>` | Crawl and extract structured data |
+| `/scrape <url> --schema ecommerce` | Extract product data |
+| `/scrape <url> --depth 2 --pages 10` | Multi-page crawl |
+| `/scrape <url> --dynamic` | Playwright for JS-heavy sites |
+| `/extract <url>` | Single-page AI extraction only |
+| `/extract <url> --schema job` | Job posting extraction |
+| `/schemas` | List all extraction schemas |
+| `/spiderexport` | Download last crawl as JSON file |
+| `/spiderexport --format csv --job 3` | Export specific job as CSV |
+| `/spiderjobs` | View recent crawl job history |
+| `/spiderstats` | Spider database statistics |
+
+### 🌐 NETWORK & RECON
+
+| Command | Description |
+|---------|-------------|
+| `/portscan <host>` | Scan common TCP ports |
+| `/ping <host>` | ICMP ping with latency |
+| `/traceroute <host>` | Hop-by-hop route trace |
+| `/banner <host> <port>` | Grab service banner |
+| `/rdns <ip>` | Reverse DNS lookup |
+| `/asn <ip>` | ASN and organisation lookup |
+| `/geoip <ip>` | IP geolocation with ISP info |
+| `/dns <domain>` | DNS record lookup (A/MX/TXT/NS) |
+| `/zonetransfer <domain>` | Attempt DNS zone transfer |
+| `/dnsbrute <domain>` | DNS subdomain brute force |
+| `/whois <domain>` | WHOIS registration data |
+| `/ssl <domain>` | SSL certificate analyser |
+| `/subdomain <domain>` | Passive subdomain discovery |
+| `/httpmethods <url>` | Check allowed HTTP methods |
+| `/openredirect <url>` | Test for open redirect vulnerability |
+
+### 🔍 WEB ANALYSIS
+
+| Command | Description |
+|---------|-------------|
+| `/headers <url>` | Security headers grade A-F |
+| `/cors <url>` | CORS misconfiguration check |
+| `/robots <url>` | Fetch and analyse robots.txt |
+| `/sitemap <url>` | Parse sitemap.xml |
+| `/techstack <url>` | Fingerprint tech stack |
+| `/pagemeta <url>` | Extract page title and meta tags |
+| `/links <url>` | Extract all internal and external links |
+| `/harvestemail <url>` | Harvest email addresses from page |
+| `/cookies <url>` | Analyse cookies for security flags |
+| `/redirectchain <url>` | Follow and map redirect chain |
+| `/wayback <url>` | Wayback Machine history lookup |
+| `/forms <url>` | Find all forms and inputs |
+| `/comments <url>` | Extract HTML comments |
+| `/jsfiles <url>` | List all JavaScript files |
+| `/cdn <url>` | Detect CDN provider |
+| `/waf <url>` | Detect Web Application Firewall |
+| `/cms <url>` | CMS detection (WP/Drupal/Shopify etc) |
+
+### 🕵️ OSINT
+
+| Command | Description |
+|---------|-------------|
+| `/ip <ip>` | IP geolocation lookup |
+| `/username <handle>` | Username hunt across 20 platforms |
+| `/gitosint <username>` | Deep GitHub profile OSINT |
+| `/emailcheck <email>` | Email validation + MX + disposable check |
+| `/emailguess <first> <last> <domain>` | Generate email pattern guesses |
+| `/archive <domain>` | Wayback Machine archive search |
+| `/paste <keyword>` | Search Pastebin for keyword |
+| `/reverseimg <url>` | Generate reverse image search links |
+| `/gdork <target>` | Generate Google dorks for a target |
+
+### 🔐 CRYPTOGRAPHY & ENCODING
+
+| Command | Description |
+|---------|-------------|
+| `/hash <text>` | Generate MD5/SHA1/SHA256/SHA512 |
+| `/identify <hash>` | Identify hash type by length |
+| `/encode <format> <text>` | Encode base64/hex/url/html/rot13 |
+| `/decode <format> <text>` | Decode base64/hex/url/html/rot13 |
+| `/extencode <format> <text>` | Extended encode base32/base58/base85/binary |
+| `/baseconvert <val> <from> <to>` | Convert between number bases |
+| `/hex2bin <hex>` | Hex to binary/decimal/octal |
+| `/passgen [length]` | Generate secure password with entropy |
+| `/passcheck <password>` | Check password strength |
+| `/gentoken [length]` | Generate random token and UUID |
+| `/uuidgen` | Generate UUID v4 |
+| `/uuidinfo <uuid>` | Parse and analyse a UUID |
+
+### 🔄 CIPHERS
+
+| Command | Description |
+|---------|-------------|
+| `/caesar <text> <shift> [decrypt]` | Caesar cipher encrypt/decrypt |
+| `/rotbrute <text>` | Brute force all 25 ROT shifts |
+| `/vigenere <text> <key> [decrypt]` | Vigenere cipher encrypt/decrypt |
+| `/atbash <text>` | Atbash reverse alphabet cipher |
+| `/xorcipher <text> <key>` | XOR cipher outputs hex and base64 |
+| `/morse encode <text>` | Text to Morse code |
+| `/morse decode <morse>` | Morse code to text |
+| `/railfence <text> <rails> [decrypt]` | Rail fence transposition cipher |
+| `/freqanalysis <text>` | Character frequency analysis |
+
+### 📊 TEXT & DATA TOOLS
+
+| Command | Description |
+|---------|-------------|
+| `/regex <pattern> <text>` | Test regex pattern against text |
+| `/textstats <text>` | Word/char/sentence count and stats |
+| `/diff <text1> \|\|\| <text2>` | Compare two texts with separator \|\|\| |
+| `/jsonformat <json>` | Pretty-print and validate JSON |
+| `/json2csv <json>` | Convert JSON array to CSV file |
+| `/csv2json <csv>` | Convert CSV data to JSON |
+| `/xmlparse <xml>` | Parse and display XML structure |
+| `/timestamp <unix>` | Convert Unix timestamp to readable date |
+| `/epoch` | Get current Unix timestamp |
+| `/ipcalc <ip/cidr>` | Subnet calculator network/broadcast/hosts |
+| `/cidr <range>` | Expand CIDR range to list of IPs |
+| `/extractip <text>` | Extract all IP addresses from text |
+| `/mac <address>` | MAC address vendor lookup |
+
+### 📁 FILE & BINARY ANALYSIS
+
+| Command | Description |
+|---------|-------------|
+| `/filetype` | Detect file type by magic bytes (reply to file) |
+| `/hexdump <url>` | Hex dump a file (reply to file or URL) |
+| `/strings` | Extract printable strings (reply to file) |
+| `/entropy` | Calculate Shannon entropy (reply to file) |
+| `/zipinfo` | Inspect ZIP contents (reply to ZIP file) |
+| `/exif` | Extract EXIF metadata (reply to image) |
+| `/fileanalyse <url>` | Download and fully analyse any file URL |
+
+### 🏁 CTF & LEARNING TOOLS
+
+| Command | Description |
+|---------|-------------|
+| `/jwt` | Decode and analyse JWT token |
+| `/magicbytes` | File signature reference table |
+| `/ports [number]` | Port service reference or single lookup |
+| `/httpstatus <code>` | HTTP status code lookup |
+| `/owasp [1-10]` | OWASP Top 10 reference |
+| `/revshell <ip> <port> [type]` | Generate reverse shell payload |
+| `/sqli [type]` | SQL injection payload library |
+| `/xss [context]` | XSS payload library by context |
+| `/lfi` | Local file inclusion payload list |
+| `/ssti [engine]` | SSTI payloads by template engine |
+
+### 🛠️ PERSONAL TOOLKIT
+
+| Command | Description |
+|---------|-------------|
+| `/save <key> <value>` | Save a value to your personal store |
+| `/get <key>` | Retrieve a saved value |
+| `/del <key>` | Delete a saved key |
+| `/kvlist` | List all your saved keys |
+| `/note <id> <content>` | Save an encrypted note |
+| `/getnote <id>` | Retrieve an encrypted note |
+| `/notes` | List all your notes |
+| `/delnote <id>` | Delete a note |
+| `/tl add <event>` | Add event to investigation timeline |
+| `/tl view` | View your investigation timeline |
+| `/tl clear` | Clear the timeline |
+| `/history` | View your recent command history |
+| `/scope add <target>` | Add target to engagement scope |
+| `/scope remove <target>` | Remove target from scope |
+| `/scope list` | List all scoped targets |
+| `/scope check <target>` | Check if target is in scope |
+| `/alias set <name> <cmd>` | Create a command alias |
+| `/alias get <name>` | Get an alias command |
+| `/alias list` | List all aliases |
+| `/alias del <name>` | Delete an alias |
+
+### ⚙️ ADMIN (Lord Noctis and Admins only)
+
+| Command | Description |
+|---------|-------------|
+| `/ban <user_id>` | Ban a user from the bot |
+| `/unban <user_id>` | Unban a user |
+| `/promote <user_id>` | Promote user to sudo |
+| `/demote <user_id>` | Demote sudo to regular user |
+| `/broadcast <message>` | Broadcast message to all groups |
+| `/stats` | Bot usage statistics |
+| `/status` | Bot uptime and activity summary |
+| `/addgroup` | Register group for broadcasts |
+| `/provider` | Show current AI provider and what is configured |
+| `/setprovider <name>` | Switch AI provider instantly (Lord Noctis only) |
+
+### 🔬 RESEARCH MODE
+
+| Command | Description |
+|---------|-------------|
+| `/research` | Activate research mode (passphrase required) |
+| `/endresearch` | Deactivate research mode |
+| `/research_status` | Check if research mode is active |
+
+---
+
 ## Adding a New Provider in the Future
 
 If you want to add a new provider (e.g. Cohere, Together AI, Perplexity):
