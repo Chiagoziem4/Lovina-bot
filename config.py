@@ -7,12 +7,14 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+import time
+BOT_START_TIME = time.time()
+
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # TELEGRAM BOT SETTINGS
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
-BOT_USERNAME = "VilegurlBot"
 BOT_NAME = "Lovina"
 CREATOR = "Lord Noctis"
 
@@ -37,11 +39,11 @@ OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
 
 # Anthropic Claude
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "")
-ANTHROPIC_MODEL = os.getenv("ANTHROPIC_MODEL", "claude-3-haiku-20240307")
+ANTHROPIC_MODEL = os.getenv("ANTHROPIC_MODEL", "claude-haiku-4-5")
 
 # Google Gemini
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
-GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-1.5-flash")
+GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.0-flash")
 
 # Mistral
 MISTRAL_API_KEY = os.getenv("MISTRAL_API_KEY", "")

@@ -7,7 +7,7 @@ import time
 from aiogram import Bot, Dispatcher
 from aiogram.types import BotCommand, BotCommandScopeDefault
 from aiogram.fsm.storage.memory import MemoryStorage
-from config import BOT_TOKEN, BOT_NAME, BOT_VERSION
+from config import BOT_TOKEN, BOT_NAME, BOT_VERSION, BOT_START_TIME
 
 # Import middleware
 from middleware.ban_check import BanCheckMiddleware
@@ -28,7 +28,6 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-BOT_START_TIME = time.time()
 
 
 async def set_default_commands(bot: Bot):
@@ -90,7 +89,11 @@ async def set_default_commands(bot: Bot):
 async def main():
     """Main bot function"""
     from config import validate_config
-    validate_config()
+    try:
+        validate_config()
+    except EnvironmentError as e:
+        logger.error(f"❌ Configuration error: {e}")
+        return
 
     # Validate token
     if not BOT_TOKEN or BOT_TOKEN == "YOUR_TOKEN_HERE":
@@ -124,6 +127,8 @@ async def main():
 
     # Get bot info
     bot_info = await bot.get_me()
+    import config as _config
+    _config.BOT_USERNAME = bot_info.username
     logger.info(f"""
 ╔════════════════════════════════════════╗
 ║       🌙 LOVINA BOT STARTING 🌙        ║
@@ -140,6 +145,8 @@ async def main():
         await dp.start_polling(bot)
     except KeyboardInterrupt:
         logger.info("Bot shutdown requested")
+    except Exception as e:
+        logger.exception(f"Unhandled exception in polling: {e}")
     finally:
         await bot.session.close()
 

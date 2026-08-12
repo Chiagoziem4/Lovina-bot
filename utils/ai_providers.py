@@ -5,6 +5,22 @@ Supports: groq, openai, anthropic, gemini, mistral, ollama
 from __future__ import annotations
 from abc import ABC, abstractmethod
 
+# Import guards for optional AI provider libraries
+try:
+    import openai
+except ImportError:
+    openai = None
+
+try:
+    import anthropic
+except ImportError:
+    anthropic = None
+
+try:
+    import google.generativeai as genai
+except ImportError:
+    genai = None
+
 
 class BaseProvider(ABC):
     @abstractmethod
@@ -34,6 +50,8 @@ class OpenAIProvider(BaseProvider):
     @property
     def name(self) -> str: return f"OpenAI ({self.model})"
     async def chat(self, messages, max_tokens=1024, temperature=0.7) -> str:
+        if openai is None:
+            raise ValueError("openai package not installed. Run: pip install openai")
         r = await self.client.chat.completions.create(model=self.model, messages=messages, max_tokens=max_tokens, temperature=temperature)
         return r.choices[0].message.content or ""
 
@@ -46,6 +64,8 @@ class AnthropicProvider(BaseProvider):
     @property
     def name(self) -> str: return f"Anthropic ({self.model})"
     async def chat(self, messages, max_tokens=1024, temperature=0.7) -> str:
+        if anthropic is None:
+            raise ValueError("anthropic package not installed. Run: pip install anthropic")
         system_msg = ""
         filtered = []
         for m in messages:
@@ -64,6 +84,8 @@ class GeminiProvider(BaseProvider):
     @property
     def name(self) -> str: return f"Google Gemini ({self.model_name})"
     async def chat(self, messages, max_tokens=1024, temperature=0.7) -> str:
+        if genai is None:
+            raise ValueError("google-generativeai package not installed. Run: pip install google-generativeai")
         import asyncio
         model = self._genai.GenerativeModel(self.model_name)
         history = []
@@ -87,6 +109,8 @@ class MistralProvider(BaseProvider):
     @property
     def name(self) -> str: return f"Mistral ({self.model})"
     async def chat(self, messages, max_tokens=1024, temperature=0.7) -> str:
+        if not self.api_key:
+            raise ValueError("MISTRAL_API_KEY not set. Add it to your environment variables.")
         import httpx
         async with httpx.AsyncClient(timeout=30.0) as c:
             r = await c.post("https://api.mistral.ai/v1/chat/completions",
