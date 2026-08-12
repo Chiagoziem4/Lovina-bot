@@ -1,7 +1,6 @@
-# 🤖 Lovina Bot — Multi-Provider AI Update
+# 🤖 Lovina Bot 
 
-This package upgrades Lovina Bot from being locked to Groq only, to supporting **6 different AI providers** that can be switched instantly without redeploying.
-
+Lovina is a Telegram bot built for security researchers, students, and pentesting teams who want fast, on-the-go access to common recon and vulnerability-assessment tools — all from a chat interface.
 ---
 
 ## What This Update Adds
@@ -473,7 +472,7 @@ Lovina Bot provides **142 commands** across 13 categories. Use `/help` for inter
 | `/alias list` | List all aliases |
 | `/alias del <name>` | Delete an alias |
 
-### ⚙️ ADMIN (Lord Noctis and Admins only)
+### ⚙️ ADMIN (Admins only)
 
 | Command | Description |
 |---------|-------------|
@@ -509,4 +508,4 @@ If you want to add a new provider (e.g. Cohere, Together AI, Perplexity):
 5. Add an entry to `PROVIDER_INFO` in `handlers/setprovider_handler.py`
 6. Add the API key env var to `config.py` and `.env.example`
 
-The whole system is designed to make this a 15-minute task.
+
