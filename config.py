@@ -125,9 +125,25 @@ BOT_VERSION = "1.0.0"
 
 def validate_config():
     missing = []
-    if not BOT_TOKEN: missing.append("BOT_TOKEN")
-    if not GROQ_API_KEY: missing.append("GROQ_API_KEY")
-    if not LORD_NOCTIS_ID: missing.append("LORD_NOCTIS_ID")
-    if not RESEARCH_PASSPHRASE: missing.append("RESEARCH_PASSPHRASE")
+    if not BOT_TOKEN:
+        missing.append("BOT_TOKEN")
+    if not LORD_NOCTIS_ID:
+        missing.append("LORD_NOCTIS_ID")
+    if not RESEARCH_PASSPHRASE:
+        missing.append("RESEARCH_PASSPHRASE")
+
+    provider_keys = {
+        "groq": ("GROQ_API_KEY", GROQ_API_KEY),
+        "openai": ("OPENAI_API_KEY", OPENAI_API_KEY),
+        "anthropic": ("ANTHROPIC_API_KEY", ANTHROPIC_API_KEY),
+        "gemini": ("GEMINI_API_KEY", GEMINI_API_KEY),
+        "mistral": ("MISTRAL_API_KEY", MISTRAL_API_KEY),
+    }
+    provider = AI_PROVIDER.lower().strip()
+    if provider not in {"groq", "openai", "anthropic", "gemini", "mistral", "ollama"}:
+        missing.append(f"AI_PROVIDER (unsupported: {AI_PROVIDER})")
+    elif provider in provider_keys and not provider_keys[provider][1]:
+        missing.append(provider_keys[provider][0])
+
     if missing:
-        raise EnvironmentError(f"Missing required environment variables: {', '.join(missing)}")
+        raise EnvironmentError(f"Missing or invalid configuration: {', '.join(missing)}")
